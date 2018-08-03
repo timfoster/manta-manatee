@@ -5,8 +5,10 @@
 #
 
 #
-# Copyright (c) 2017, Joyent, Inc.
+# Copyright (c) 2018, Joyent, Inc.
 #
+
+NAME = manta-manatee
 
 #
 # Tools
@@ -32,6 +34,8 @@ SMF_MANIFESTS_IN =		smf/manifests/backupserver.xml.in \
 
 NODE_PREBUILT_VERSION :=	v0.10.26
 NODE_PREBUILT_TAG :=		zone
+# XXX timf I think this is incorrect since MG sets BASE_IMAGE_UUID
+#     to triton-origin-multiarch-15.4.1@1.0.1
 # Allow building on a SmartOS image other than sdc-multiarch/13.3.1.
 NODE_PREBUILT_IMAGE =		b4bdc598-8939-11e3-bea4-8341f6861379
 
@@ -45,18 +49,31 @@ GO_PREBUILT_VERSION =		1.9.2
 PG_PREFAULTER_IMPORT =		github.com/joyent/pg_prefaulter
 PG_PREFAULTER =			pg_prefaulter
 
-CLEAN_FILES +=			$(PG_PREFAULTER)
+CLEAN_FILES +=			$(PG_PREFAULTER) $(NAME)-pkg-*.bz2
 
 
-include ./tools/mk/Makefile.defs
-include ./tools/mk/Makefile.go_prebuilt.defs
-include ./tools/mk/Makefile.node_prebuilt.defs
-include ./tools/mk/Makefile.node_modules.defs
-include ./tools/mk/Makefile.smf.defs
+# XXX timf comment out during eng development
+#REQUIRE_ENG := $(shell git submodule update --init deps/eng)
+include ./deps/eng/tools/mk/Makefile.defs
+TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 
-RELEASE_TARBALL :=		manta-manatee-pkg-$(STAMP).tar.bz2
+include ./deps/eng/tools/mk/Makefile.go_prebuilt.defs
+include ./deps/eng/tools/mk/Makefile.node_prebuilt.defs
+include ./deps/eng/tools/mk/Makefile.agent_prebuilt.defs
+include ./deps/eng/tools/mk/Makefile.node_modules.defs
+include ./deps/eng/tools/mk/Makefile.smf.defs
+
+RELEASE_TARBALL :=		$(NAME)-pkg-$(STAMP).tar.bz2
 ROOT :=				$(shell pwd)
-RELSTAGEDIR :=			/tmp/$(STAMP)
+RELSTAGEDIR :=			/tmp/$(NAME)-$(STAMP)
+
+BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
+BUILDIMAGE_NAME = manta-postgres
+BUILDIMAGE_DESC	= Manta manatee
+BUILDIMAGE_PKG	= $(PWD)/$(RELEASE_TARBALL)
+BUILDIMAGE_PKGSRC = lz4-131nb1
+BUILDIMAGE_STAGEDIR = /tmp/buildimage-$(NAME)-$(STAMP)
+AGENTS		= amon config registrar waferlock
 
 #
 # Repo-specific targets
@@ -104,9 +121,9 @@ publish: release
 		echo "error: 'BITS_DIR' must be set for 'publish' target"; \
 		exit 1; \
 	fi
-	mkdir -p $(BITS_DIR)/manta-manatee
+	mkdir -p $(BITS_DIR)/$(NAME)
 	cp $(ROOT)/$(RELEASE_TARBALL) \
-	    $(BITS_DIR)/manta-manatee/$(RELEASE_TARBALL)
+	    $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
 .PHONY: pg
 pg: all deps/postgresql92/.git deps/postgresql96/.git deps/pg_repack/.git
@@ -130,10 +147,10 @@ $(PG_PREFAULTER): deps/pg_prefaulter/.git $(STAMP_GO_TOOLCHAIN)
 	    -X main.date=$(shell /usr/bin/date -u +%FT%TZ)" \
 	    -o $@ $(PG_PREFAULTER_IMPORT)
 
-include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.go_prebuilt.targ
-include ./tools/mk/Makefile.node_prebuilt.targ
-include ./tools/mk/Makefile.node_modules.targ
-include ./tools/mk/Makefile.smf.targ
-include ./tools/mk/Makefile.targ
-
+include ./deps/eng/tools/mk/Makefile.deps
+include ./deps/eng/tools/mk/Makefile.go_prebuilt.targ
+include ./deps/eng/tools/mk/Makefile.node_prebuilt.targ
+include ./deps/eng/tools/mk/Makefile.agent_prebuilt.targ
+include ./deps/eng/tools/mk/Makefile.node_modules.targ
+include ./deps/eng/tools/mk/Makefile.smf.targ
+include ./deps/eng/tools/mk/Makefile.targ
