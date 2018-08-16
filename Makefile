@@ -72,7 +72,6 @@ BUILDIMAGE_NAME = manta-postgres
 BUILDIMAGE_DESC	= Manta manatee
 BUILDIMAGE_PKG	= $(PWD)/$(RELEASE_TARBALL)
 BUILDIMAGE_PKGSRC = lz4-131nb1
-BUILDIMAGE_STAGEDIR = /tmp/buildimage-$(NAME)-$(STAMP)
 AGENTS		= amon config registrar waferlock
 
 #
