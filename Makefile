@@ -49,7 +49,7 @@ GO_PREBUILT_VERSION =		1.9.2
 PG_PREFAULTER_IMPORT =		github.com/joyent/pg_prefaulter
 PG_PREFAULTER =			pg_prefaulter
 
-CLEAN_FILES +=			$(PG_PREFAULTER) $(NAME)-pkg-*.bz2
+CLEAN_FILES +=			$(PG_PREFAULTER)
 
 REQUIRE_ENG := $(shell git submodule update --init deps/eng)
 include ./deps/eng/tools/mk/Makefile.defs
