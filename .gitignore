@@ -3,6 +3,7 @@
 /node_modules
 /tmp
 /pg_prefaulter
+bits
 build
 docs/*.json
 docs/*.html
