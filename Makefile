@@ -61,7 +61,7 @@ include ./deps/eng/tools/mk/Makefile.agent_prebuilt.defs
 include ./deps/eng/tools/mk/Makefile.node_modules.defs
 include ./deps/eng/tools/mk/Makefile.smf.defs
 
-RELEASE_TARBALL :=		$(NAME)-pkg-$(STAMP).tar.bz2
+RELEASE_TARBALL :=		$(NAME)-pkg-$(STAMP).tar.gz
 ROOT :=				$(shell pwd)
 RELSTAGEDIR :=			/tmp/$(NAME)-$(STAMP)
 
@@ -109,7 +109,7 @@ release: all deps docs pg
 	    $(RELSTAGEDIR)/root/opt/smartdc/boot/scripts/
 	cp -R $(ROOT)/boot/* \
 	    $(RELSTAGEDIR)/root/opt/smartdc/boot/
-	cd $(RELSTAGEDIR) && $(TAR) -jcf $(ROOT)/$(RELEASE_TARBALL) root site
+	cd $(RELSTAGEDIR) && $(TAR) -I pigz -cf $(ROOT)/$(RELEASE_TARBALL) root site
 	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
