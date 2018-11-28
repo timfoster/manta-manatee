@@ -51,7 +51,8 @@ PG_PREFAULTER =			pg_prefaulter
 
 CLEAN_FILES +=			$(PG_PREFAULTER)
 
-REQUIRE_ENG := $(shell git submodule update --init deps/eng)
+ENGBLD_USE_BUILDIMAGE =		true
+ENGBLD_REQUIRE :=		$(shell git submodule update --init deps/eng)
 include ./deps/eng/tools/mk/Makefile.defs
 TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 
