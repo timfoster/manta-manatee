@@ -32,7 +32,7 @@ SMF_MANIFESTS_IN =		smf/manifests/backupserver.xml.in \
 # Variables
 #
 
-NODE_PREBUILT_VERSION :=	v0.10.26
+NODE_PREBUILT_VERSION :=	v0.10.48
 NODE_PREBUILT_TAG :=		zone
 # XXX timf I think this is incorrect since MG sets BASE_IMAGE_UUID
 #     to triton-origin-multiarch-15.4.1@1.0.1
