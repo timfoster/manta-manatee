@@ -11,7 +11,7 @@ cscope.in.out
 cscope.po.out
 cscope.out
 smf/manifests/*.xml
-manta-manatee-pkg*.bz2
+manta-manatee-pkg*.gz
 *.swp
 *.*~
 *.un~
